@@ -4,14 +4,48 @@ Single-page portfolio for **Cozy Texture Art**, built from the "Ira Mehra Textur
 
 ## Project
 
-- `index.html` — the whole site. React 18.3.1 (no build step) + `htm` from jsdelivr for markup. Screens: home, collection (art rooms + exhibit), piece detail, about. State-driven, no router.
-- `vendor/` — React and ReactDOM 18.3.1, served locally.
-- `fonts/` — Instrument Serif (regular + italic) and Jost (300–500 variable), latin + latin-ext woff2.
-- Artworks are **procedural SVG** (`shapes()` + `artSvg()`): flat pigment shapes, warped, then lit by a turbulence height map via `feDiffuseLighting`. Light azimuth/elevation and `relief` drive the texture. They stand in until real photos exist.
-- Inline style strings are parsed into React style objects by `hx`/`parseStyle`, so markup stays close to HTML. Hover states use the `.hov-*` classes in `<style>` (inline styles can't do `:hover`).
+- `index.html` — the whole site and its one page template. React 18.3.1 (no build step) + `htm` from jsdelivr for markup. All asset paths are absolute (`/fonts`, `/vendor`, `/data`, `/images`) because pages live at nested URLs.
+- `data/artworks.js` — **the catalogue**: `ARTWORKS`, `ART_ROOMS`, `TAGS`, `FAMILIES`, `SUITS`, plus a commented TEMPLATE entry. Adding a piece never touches `index.html`.
+- `images/art/<slug>/` — `front.webp` (1600px), `front-sm.webp` (720px, grids/hero/thumbs), `room.webp` (1600px).
+- `tools/add_art.py <slug> <front> <room>` — resizes and strips EXIF into `images/art/<slug>/`, prints the `images` block and a suggested palette. Needs Pillow; run with plain `python3` (not `-I`, which hides the user site-packages Pillow lives in). HEIC goes through `sips` first.
+- `tools/dev_server.py [port] [dir]` — local server with the same fallback as Vercel (unknown paths → `index.html`).
+- `vercel.json` — hosting is Vercel; rewrites `/art/:slug`, `/collection`, `/collection/:room`, `/about` to `index.html`.
+- `vendor/`, `fonts/` — React 18.3.1; Instrument Serif + Jost woff2.
+- Inline style strings are parsed into React style objects by `hx`/`parseStyle`, so markup stays close to HTML. Hover states use the `.hov-*` / `.lift` classes in `<style>` (inline styles can't do `:hover`).
 - Mobile layout is chosen in JS (`m = vw < 720`), not media queries.
 - Remote: `github.com/lifedesigndpc/cozytextureart`, branch `main`.
-- Preview: the Desktop is iCloud-synced and the preview server can't read it. Copy the folder to the session scratchpad and serve it from there (the `cozy-texture-art` entry in `~/Desktop/.claude/launch.json`). Re-copy after every edit.
+- Preview: the Desktop is iCloud-synced and the preview server can't read it. Copy the folder to the session scratchpad (`site/`) and serve it with `tools/dev_server.py` from there (the `cozy-texture-art` entry in `~/Desktop/.claude/launch.json`). Re-copy after every edit. Test fixtures go in the scratchpad copy only, never in the repo.
+
+### URLs
+| Path | Screen |
+|---|---|
+| `/` | Home |
+| `/collection` (`?tag=<tag>`, `?q=`) | Filters + art rooms row; with a filter, the exhibit of matching pieces |
+| `/collection/<room-slug>` | Exhibit of one art room |
+| `/art/<slug>` | Piece page (the template) |
+| `/about` | About + creator note |
+| anything else | "This wall is empty." not-found screen |
+
+Links are real `<a href>` (shareable, open in new tab) routed in-page by `link()`; the title updates per piece/room.
+
+### Catalogue model
+- **Piece** fields (see TEMPLATE in `data/artworks.js`): `slug`, `title`, `year`, `concept` (2–3 lines: what it is, how it was made), `holds` (one brief note on what it represents → "What it holds"), `size` (`{w,h}` cm or `{d}`), optional `depth`/`relief`, `medium`, `shape`, `family`, `palette`, `tags`, `suits`, `status`, `featured`, `images`.
+- **Tags** describe what a piece is (subject, colour story, mood). Every tag must exist in `TAGS`. Add new tags there when a piece needs one.
+- **Art rooms are tag collections**: a piece appears in every room sharing at least one tag, so one piece can hang in several rooms. Rooms with no pieces are hidden.
+- **No prices** anywhere (decision 2026-10-18). Enquiry is the only path; sold pieces switch the CTA to a commission.
+- **Placeholders removed**: no procedural artworks in the catalogue. Procedural SVG (`DECOR`, `artSvg`) survives only as illustration: the texture-vs-print slider, the four process steps, and the home hero until there are ≥3 real pieces.
+- **Piece page views** are photo-based: Front, In a room, Close-up (the front photo at 2.6× following the pointer). Photos can't be relit, so raking light, 3D turn and studio film from the reference are not used.
+- Front photos are assumed tightly cropped to the canvas edge (shape mask + light-driven shadow). Set `images.front.tight: false` if a photo includes wall/background.
+
+### Adding an art room (workflow with the user)
+The user sends one art room at a time, two images per piece: **front** and **in a room**. For each piece:
+1. Read the size from the images (W × H cm, or diameter). Don't guess a size that isn't shown; ask.
+2. Name it per §10 (2–3 words; place, time or feeling + material/colour; "No." for series). Check the name isn't already used.
+3. Write `concept` (2–3 lines, materials and making, honest) and `holds` (one sentence on what it represents), in the §8 voice.
+4. Pick `shape`, `family`, 3–4 `palette` pigments (use the tool's hex suggestions, name each with one lower-case food/earth/flower word), `tags` from `TAGS` (add new ones if needed), `suits`.
+5. Slug = title in lower-case kebab case. Run `tools/add_art.py`, fill the TEMPLATE, append to `ARTWORKS`.
+6. Make sure the room the user named exists in `ART_ROOMS` with tags that pull these pieces in.
+7. Preview the piece pages, the room and the home page; then commit and push.
 
 ### Cozy Texture Art adaptations (deliberate differences from the reference)
 
@@ -21,7 +55,7 @@ Single-page portfolio for **Cozy Texture Art**, built from the "Ira Mehra Textur
 - **Creator note** replaces the "studio visits by appointment" block: a mother and designer, exploring her creative side.
 - **Socials:** Instagram and email only. No Pinterest, no YouTube. Both links are still `#` placeholders.
 - **Footer:** "Hand-built, layer by layer · © year", with no city.
-- **Portraits** are still striped placeholders. Prices are still ₹ placeholders from the reference.
+- **Portraits** are still striped placeholders. Prices are hidden site-wide (the §10 price format is unused).
 - **Voice:** the reference writes in the artist's first person. The site currently uses a warm brand/third-person voice because the creator's own words aren't known yet. Switch to first person once the creator's details are confirmed.
 
 ---
