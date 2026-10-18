@@ -233,7 +233,7 @@ class App extends React.Component {
     return html`<footer style="padding:48px clamp(16px,4vw,56px);border-top:1px solid rgba(43,38,34,.12);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:20px">
       <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">${ARTIST}</span>
       <div style="display:flex;flex-wrap:wrap;gap:28px;font-size:11px;letter-spacing:.3em;text-transform:uppercase">
-        <a href="#">Instagram</a><a href="#">Pinterest</a><a href="#">YouTube</a>
+        <a href="#">Instagram</a>
       </div>
       <span style="font-size:12px;color:#7A7067">Hand-built, layer by layer · © 2026</span>
     </footer>`;
@@ -275,7 +275,7 @@ class App extends React.Component {
     <section data-screen-label="01 Landing" ref=${el=>{this.hero=el;}} onMouseMove=${heroMove} style="position:relative;height:${H}px;overflow:hidden">
       ${heroArts}
       <div style="position:absolute;left:50%;top:${m?'24%':'44%'};transform:translate(-50%,-50%);width:${m?'calc(100vw - 32px)':'min(560px,46vw)'};text-align:center;display:flex;flex-direction:column;align-items:center;gap:${m?16:22}px;pointer-events:none">
-        ${eyebrow('New work · Autumn 2026')}
+        ${eyebrow('Texture art for everyday living',`font-size:${m?14:'clamp(15px,1.4vw,19px)'};letter-spacing:${m?'.24em':'.32em'};line-height:1.5`)}
         <h1 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,7.2vw,112px);line-height:.92;letter-spacing:-.01em">Art you can <span style="font-style:italic">feel.</span></h1>
         <p style="margin:0;font-size:${m?15:16}px;line-height:1.65;color:#5A5149;max-width:420px;text-wrap:pretty">Each piece is sculpted by hand. Texture paste goes onto gesso-primed canvas with a palette knife, is pushed into peaks and ridges, dried, then painted in soft pastels and sealed.</p>
         <span onClick=${()=>this.go('collection')} style="pointer-events:auto;cursor:pointer;font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:${INK};border-bottom:1px solid ${INK};padding-bottom:6px">View the collection →</span>
@@ -562,12 +562,11 @@ class App extends React.Component {
     </section>
 
     <section data-screen-label="04c Contact" style="${SECT};background:#F0EBE3;padding-top:90px;padding-bottom:90px;display:flex;flex-direction:column;align-items:center;gap:36px;text-align:center">
-      <h2 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,72px);line-height:1;max-width:820px">Come and touch them. <span style="font-style:italic">Studio visits by appointment.</span></h2>
-      <p style="margin:0;font-size:16px;line-height:1.7;color:#5A5149;max-width:520px">Write in for a studio visit, a commission, or a video of a piece in daylight. Commissions open twice a year.</p>
+      <div style="font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:#7A7067">Meet the creator</div>
+      <h2 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,72px);line-height:1;max-width:820px">A mother and designer, <span style="font-style:italic">exploring her creative side.</span></h2>
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#5A5149;max-width:560px">Behind Cozy Texture Art is a mother and designer who found her way back to making things by hand. Between family life and design work, texture art became the slow, quiet corner of her day, and every piece carries a little of that calm into your home.</p>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px;font-size:12px;letter-spacing:.3em;text-transform:uppercase">
         <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">Instagram</a>
-        <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">Pinterest</a>
-        <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">YouTube · process films</a>
         <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">Email the studio</a>
       </div>
     </section>`;
