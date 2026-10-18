@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cozy Texture Art</title>
+<meta name="description" content="Hand-sculpted texture art in soft pastels: one-of-one pieces built in layers of texture paste, painted and sealed by Cozy Texture Art.">
+<style>
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url("fonts/instrument-serif-italic-latin-ext.woff2") format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;src:url("fonts/instrument-serif-italic-latin.woff2") format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url("fonts/instrument-serif-latin-ext.woff2") format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;src:url("fonts/instrument-serif-latin.woff2") format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Jost';font-style:normal;font-weight:300 500;font-display:swap;src:url("fonts/jost-latin-ext.woff2") format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Jost';font-style:normal;font-weight:300 500;font-display:swap;src:url("fonts/jost-latin.woff2") format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+body{margin:0;background:#F7F4EF;color:#2B2622;font-family:Jost,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:#8E5A55;text-decoration:none}a:hover{color:#2B2622}
+input,textarea,button{font-family:inherit}
+::selection{background:#EFC6C6}
+input[type=range]{accent-color:#2B2622}
+.hov-rose:hover{color:#8E5A55!important}
+.hov-ul:hover{border-color:#2B2622!important}
+.hov-ink:hover{color:#2B2622!important}
+.hov-dark:hover{background:#4A413A!important}
+.hov-fade:hover{opacity:.92}
+.noscroll::-webkit-scrollbar{display:none}
+#boot{min-height:100vh;display:flex;align-items:center;justify-content:center;font:italic 28px 'Instrument Serif',serif;color:#7A7067}
+</style>
+</head>
+<body>
+<div id="root"><div id="boot">Cozy Texture Art</div></div>
+
+<script src="vendor/react-18.3.1.min.js"></script>
+<script src="vendor/react-dom-18.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+'use strict';
+const ARTIST = 'Cozy Texture Art';
+
+const C = {cream:'#F6EFE3',butter:'#F3E3B0',apricot:'#F2CDB0',peach:'#F5D6C6',blush:'#EFC6C6',rose:'#E6B8BF',lavender:'#D8CDE9',lilac:'#C8BEDF',powder:'#C6D8E8',mist:'#DDE7EC',sage:'#C9D8C1',pistachio:'#D9E4BF',mint:'#CFE6DA',sand:'#E8DCCB',oat:'#EDE3D2',clay:'#E4C7B1',terracotta:'#DDB29A',taupe:'#D7CBBB',bubblegum:'#F4B9CF',aqua:'#AFE1DB',lemon:'#F5E69B',coral:'#F5B8A6'};
+const FAM = {warm:{label:'Blush & butter',dots:['blush','butter','apricot']},green:{label:'Sage & pistachio',dots:['sage','pistachio','mint']},cool:{label:'Powder & lilac',dots:['powder','lavender','lilac']}};
+const DIM = {rect:[400,500],square:[440,440],round:[440,440],arch:[400,540],land:[520,390]};
+const RAD = {rect:'2px',square:'2px',round:'50%',arch:'50% 50% 2px 2px / 37% 37% 2px 2px',land:'2px'};
+const SHAPES = {rect:'Portrait',square:'Square',round:'Round',arch:'Arch',land:'Landscape'};
+const ARTS = [
+ {id:'morning-plaster',cat:'earthy',title:'Morning Plaster',kind:'sun',shape:'rect',cols:['oat','sand','clay','terracotta'],fam:'warm',theme:'Calm',rooms:['Living room','Entryway'],dims:'90 × 120 cm',mm:'6 mm',relief:5,price:84000,freq:'0.006 0.028',seed:3,sig:'Made in the first rainy week of the season, when the light came in yellow for about ten minutes each morning. It is about the small, reliable things that start a day well.'},
+ {id:'sage-hours',cat:'nature',title:'Sage Hours',kind:'bands',shape:'rect',cols:['mint','sage','pistachio','cream'],fam:'green',theme:'Nature',rooms:['Living room','Dining'],dims:'75 × 100 cm',mm:'5 mm',relief:4.5,price:62000,freq:'0.004 0.035',seed:11,sig:'Four layers, laid down a day apart, like the hours of a slow afternoon in a garden. Each band is a different kind of quiet.'},
+ {id:'lilac-doorway',cat:'pop',title:'Lilac Doorway',kind:'arch',shape:'arch',cols:['lilac','bubblegum','lemon','aqua'],fam:'cool',theme:'Spiritual',rooms:['Bedroom','Entryway'],dims:'60 × 90 cm',mm:'4 mm',relief:4,price:58000,freq:'0.012',seed:5,sig:'Doorways are where we pause. This is a threshold for the end of the day, something to look at before you close the room.'},
+ {id:'petal-study',cat:'floral',title:'Petal Study No. 4',kind:'bloom',shape:'round',cols:['peach','rose','butter','cream'],fam:'warm',theme:'Florals',rooms:['Bedroom'],dims:'70 cm diameter',mm:'7 mm',relief:6,price:54000,freq:'0.02',seed:21,sig:'Six petals, each pressed with the flat of the knife so each one stands at its own height. It stands for growth that happens in rounds, not in a line.'},
+ {id:'low-tide',cat:'nature',title:'Low Tide',kind:'tide',shape:'land',cols:['mist','powder','lavender','cream'],fam:'cool',theme:'Nature',rooms:['Living room'],dims:'120 × 90 cm',mm:'8 mm',relief:6.5,price:96000,freq:'0.003 0.03',seed:8,sig:'Made after a morning at the beach, when the sea pulled back and left the sand ridged and shining. It is about letting go without losing your shape.'},
+ {id:'quiet-field',cat:'nature',title:'Quiet Field',kind:'bands',shape:'square',cols:['butter','pistachio','sage','cream'],fam:'green',theme:'Calm',rooms:['Dining','Living room'],dims:'80 × 80 cm',mm:'5 mm',relief:5,price:66000,freq:'0.005 0.04',seed:14,sig:'A field seen from a train window. Nothing happens in it, which is exactly the point.'},
+ {id:'rose-dune',cat:'earthy',title:'Rose Dune',kind:'tide',shape:'rect',cols:['sand','clay','terracotta','oat'],fam:'warm',theme:'Nature',rooms:['Bedroom','Living room'],dims:'90 × 120 cm',mm:'7 mm',relief:6.5,price:88000,freq:'0.004 0.022',seed:31,sig:'Sand holds the shape of the wind for a day. This holds a warm desert evening for a lot longer.'},
+ {id:'moon-bowl',cat:'pop',title:'Moon Bowl',kind:'sun',shape:'round',cols:['aqua','lemon','coral','lilac'],fam:'cool',theme:'Celestial',rooms:['Entryway','Bedroom'],dims:'60 cm diameter',mm:'5 mm',relief:5,price:48000,freq:'0.015',seed:17,sig:'The moon in a bowl of water, something you can hold for a moment. It is for calm nights and clear heads.'},
+ {id:'clay-arch',cat:'earthy',title:'Clay Arch',kind:'arch',shape:'arch',cols:['taupe','oat','clay','sage'],fam:'green',theme:'Spiritual',rooms:['Entryway','Dining'],dims:'60 × 90 cm',mm:'4 mm',relief:4,price:56000,freq:'0.01',seed:27,sig:'An arch for a home that still feels new. People often choose it when they move in: a warm, earthy way of saying welcome.'},
+ {id:'cloud-garden',cat:'floral',title:'Cloud Garden',kind:'bloom',shape:'square',cols:['mist','powder','lilac','cream'],fam:'cool',theme:'Florals',rooms:['Bedroom','Kids room'],dims:'70 × 70 cm',mm:'6 mm',relief:5.5,price:52000,freq:'0.018',seed:41,sig:'Flowers drawn the way clouds move, loose and a little out of order, like a daydream you can hang on the wall.'},
+ {id:'peony-hour',cat:'floral',title:'Peony Hour',kind:'garden',shape:'rect',cols:['cream','rose','peach','sage'],fam:'warm',theme:'Florals',rooms:['Bedroom','Living room'],dims:'75 × 100 cm',mm:'8 mm',relief:6.5,price:72000,freq:'0.02',seed:52,sig:'Three peonies opening at different speeds. Each petal is lifted off the canvas with the tip of the knife, so they stand off the surface like real petals.'},
+ {id:'sorbet',cat:'pop',title:'Sorbet No. 2',kind:'pop',shape:'square',cols:['cream','bubblegum','aqua','lemon'],fam:'warm',theme:'Calm',rooms:['Kids room','Living room','Dining'],dims:'80 × 80 cm',mm:'6 mm',relief:5.5,price:64000,freq:'0.016',seed:63,sig:'The signature cozy palette at its loudest: bubblegum, aqua and lemon, still soft enough to live with. Pure summer-holiday happiness.'}
+];
+const AROOMS = [
+ {k:'floral',name:'The Bloom Room',sub:'Florals, petals and peonies',text:'Flowers built petal by petal, each one sculpted in texture paste and lifted off the canvas with the tip of the knife.',cover:{kind:'garden',cols:['peach','rose','blush','sage']},f:a=>a.cat==='floral'},
+ {k:'earthy',name:'The Clay Room',sub:'Earthy tones: oat, sand and terracotta',text:'Colours of unfired clay and old lime walls. Grounding pieces for warm wood and linen homes.',cover:{kind:'strata',cols:['oat','clay','terracotta','taupe']},f:a=>a.cat==='earthy'},
+ {k:'pop',name:'Signature Pop Colours',sub:'The brightest pastels',text:'Bubblegum, aqua, lemon and lilac. The cozy signature palette, made for rooms that want a little joy.',cover:{kind:'pop',cols:['cream','bubblegum','aqua','lemon']},f:a=>a.cat==='pop'},
+ {k:'nature',name:'The Grove',sub:'Fields, tides and gardens',text:'Landscapes you can run a hand across: ridged sand, long grass, slow afternoons outdoors.',cover:{kind:'grove',cols:['mint','sage','pistachio','butter']},f:a=>a.cat==='nature'}
+];
+const THEMES = ['Calm','Nature','Florals','Celestial','Spiritual'];
+const ROOMS = ['Living room','Bedroom','Entryway','Dining','Kids room'];
+const VIEWS = [{k:'front',l:'Front'},{k:'raking',l:'Raking light'},{k:'macro',l:'Close-up'},{k:'room',l:'In a room'},{k:'angled',l:'Side angle'}];
+const VLABEL = {front:'Front view',raking:'Raking light · shows the relief',macro:'Close-up · 3.4×',room:'In a living room',angled:'Side angle · 3 cm depth','3d':'3D view',video:'Studio film'};
+const inr = n => '₹ ' + n.toLocaleString('en-IN');
+const byId = id => ARTS.find(a => a.id === id);
+const INK = '#2B2622', PAPER = '#F7F4EF';
+const GRAIN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .2  0 0 0 .45 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`;
+
+// React.createElement, plus inline CSS strings parsed into style objects so the markup can stay close to HTML.
+const h0 = React.createElement;
+const styleCache = new Map();
+function parseStyle(s) {
+  let o = styleCache.get(s); if (o) return o;
+  o = {};
+  for (const d of s.split(';')) {
+    const i = d.indexOf(':'); if (i < 0) continue;
+    let k = d.slice(0, i).trim(); const v = d.slice(i + 1).trim(); if (!k) continue;
+    if (!k.startsWith('--')) k = k.replace(/^-webkit-/, 'Webkit-').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+    o[k] = v;
+  }
+  if (styleCache.size > 3000) styleCache.clear();
+  styleCache.set(s, o); return o;
+}
+function hx(type, props, ...kids) {
+  if (props && typeof props.style === 'string') props = {...props, style: parseStyle(props.style)};
+  return h0(type, props, ...kids);
+}
+const html = htm.bind(hx);
+const h = h0;
+
+function shapes(a, w, H) {
+  const c = a.cols.map(n => C[n]);
+  const R = (x,y,ww,hh,f,k) => h('rect',{key:k,x,y,width:ww,height:hh,fill:f});
+  const O = (cx,cy,r,f,k) => h('circle',{key:k,cx,cy,r,fill:f});
+  const bg = R(-60,-60,w+120,H+120,c[0],'bg');
+  switch (a.kind) {
+    case 'sun': return [bg, O(w*.5,H*.38,w*.27,c[1],1), R(-60,H*.64,w+120,H,c[2],2), R(-60,H*.8,w+120,H*.07,c[3],3)];
+    case 'bands': return [bg, R(-60,H*.28,w+120,H*.3,c[1],1), R(-60,H*.54,w+120,H*.24,c[2],2), R(-60,H*.76,w+120,H*.4,c[3],3), O(w*.72,H*.16,w*.06,c[2],4)];
+    case 'arch': return [bg, R(w*.25,H*.38,w*.5,H*.7,c[1],1), O(w*.5,H*.38,w*.25,c[1],2), O(w*.5,H*.32,w*.08,c[2],3), R(-60,H*.86,w+120,H,c[3],4)];
+    case 'bloom': {
+      const out=[bg]; for (let i=0;i<6;i++){const t=i*Math.PI/3; out.push(O(w*.5+Math.cos(t)*w*.18,H*.5+Math.sin(t)*w*.18,w*.14,c[1],'p'+i));}
+      out.push(O(w*.5,H*.5,w*.1,c[2],'c'), O(w*.82,H*.16,w*.06,c[3],'d')); return out; }
+    case 'tide': return [bg, O(w*.18,H*1.02,w*.58,c[1],1), O(w*.88,H*1.12,w*.62,c[2],2), O(w*.45,H*1.34,w*.55,c[3],3)];
+    case 'pop': return [bg, O(w*.3,H*.34,w*.27,c[1],1), R(w*.42,H*.46,w*.5,H*.36,c[2],2), O(w*.74,H*.8,w*.15,c[3],3), O(w*.82,H*.16,w*.08,c[1],4), R(w*.08,H*.78,w*.22,H*.08,c[3],5)];
+    case 'garden': { const out=[bg, R(-60,H*.82,w+120,H,c[3],'g')]; [[.32,.34,.17],[.7,.5,.13],[.42,.7,.1]].forEach(([x,y,r],j)=>{ for(let i=0;i<7;i++){const t=i*Math.PI*2/7+j; out.push(O(w*x+Math.cos(t)*w*r,H*y+Math.sin(t)*w*r,w*r*.78,j===1?c[2]:c[1],'b'+j+i));} out.push(O(w*x,H*y,w*r*.55,c[j===2?1:2],'m'+j)); }); return out; }
+    case 'strata': { const out=[bg]; [.12,.26,.38,.5,.6,.72,.84].forEach((y,i)=>out.push(h('rect',{key:'s'+i,x:-120,y:H*y,width:w+240,height:H*(.06+(i%3)*.03),fill:c[1+i%3],transform:`rotate(-14 ${w/2} ${H/2})`}))); out.push(O(w*.74,H*.2,w*.1,c[2],'o')); return out; }
+    case 'grove': { const out=[bg, R(-60,H*.74,w+120,H,c[3],'g')]; [[.18,.5,.12,.28],[.4,.42,.15,.36],[.64,.48,.13,.3],[.84,.55,.1,.22]].forEach(([x,y,rx,ry],i)=>out.push(h('ellipse',{key:'t'+i,cx:w*x,cy:H*y,rx:w*rx,ry:H*ry,fill:c[1+i%2]}))); out.push(O(w*.8,H*.14,w*.07,c[3],'s')); return out; }
+  }
+  return [bg];
+}
+
+// The "texture": warped flat shapes lit by a turbulence height map, so relief responds to light direction.
+function artSvg(a, o) {
+  const [w,H] = DIM[a.shape]; const id = 'tx-' + o.uid;
+  const el = o.el ?? 35, az = o.az ?? 225; const s = Math.max(.12, Math.sin(el*Math.PI/180));
+  const rel = o.relief ?? a.relief;
+  const fx = [
+    h('feTurbulence',{key:'w',type:'fractalNoise',baseFrequency:'0.014',numOctaves:2,seed:a.seed,result:'warp'}),
+    h('feDisplacementMap',{key:'d',in:'SourceGraphic',in2:'warp',scale:30,xChannelSelector:'R',yChannelSelector:'G',result:'paint'})
+  ];
+  if (!o.flat) fx.push(
+    h('feTurbulence',{key:'t',type:'fractalNoise',baseFrequency:a.freq,numOctaves:4,seed:a.seed+7,result:'height'}),
+    h('feDiffuseLighting',{key:'l',in:'height',surfaceScale:rel,diffuseConstant:1,lightingColor:'#ffffff',result:'light'}, h('feDistantLight',{azimuth:az,elevation:el})),
+    h('feComposite',{key:'c',in:'paint',in2:'light',operator:'arithmetic',k1:(.7/s).toFixed(3),k2:.3,k3:0,k4:0})
+  );
+  return h('svg',{viewBox:`0 0 ${w} ${H}`,preserveAspectRatio:'xMidYMid slice',style:{display:'block',width:'100%',height:'100%'},role:'img','aria-label':a.title||'Texture detail'},
+    h('defs',null,h('filter',{id,x:0,y:0,width:w,height:H,filterUnits:'userSpaceOnUse',colorInterpolationFilters:'sRGB'},...fx)),
+    h('g',{filter:`url(#${id})`},...shapes(a,w,H)));
+}
+
+function artBox(a, o) {
+  const [w,H] = DIM[a.shape]; const r = (o.az ?? 225)*Math.PI/180;
+  const dx = (-Math.cos(r)*14).toFixed(1), dy = (-Math.sin(r)*14+10).toFixed(1);
+  return h('div',{style:{width:'100%',aspectRatio:`${w} / ${H}`,borderRadius:RAD[a.shape],overflow:'hidden',background:C[a.cols[0]],
+    boxShadow:o.shadow===false?'none':`0 1px 2px rgba(60,40,20,.12), ${dx}px ${dy}px 36px -10px rgba(70,48,28,.32)`}}, artSvg(a,o));
+}
+
+const WPCT = {rect:52,square:62,round:62,arch:46,land:78};
+
+const eyebrow = (t, extra='') => html`<div style="border-top:1.5px solid ${INK};padding-top:12px;font-size:11px;letter-spacing:.42em;text-transform:uppercase;${extra}">${t}</div>`;
+const roundBtn = (onClick, label, size=48) => html`<button onClick=${onClick} aria-label=${label==='←'?'Previous':'Next'} style="flex:none;width:${size}px;height:${size}px;border-radius:50%;border:1px solid ${INK};background:transparent;cursor:pointer;font-size:16px;color:${INK}">${label}</button>`;
+const chipBtn = (c, inner) => html`<button onClick=${c.onClick} style="display:flex;align-items:center;gap:10px;padding:${c.pad||'8px 16px'};border-radius:999px;border:1px solid ${c.bd};background:${c.bg};color:${INK};cursor:pointer;font-size:13px;letter-spacing:.06em">${inner||c.label}</button>`;
+const SECT = 'padding-left:clamp(16px,4vw,56px);padding-right:clamp(16px,4vw,56px);box-sizing:border-box';
+
+class App extends React.Component {
+  state = { screen:'home', artId:'morning-plaster', lx:.5, ly:.45, cmp:50,
+    q:'', fFam:null, fTheme:null, fShape:null, fRoom:null, room:null, sIdx:0,
+    view:'front', rakeAz:200, rx:-8, ry:-24, vidT:0, playing:true, saved:{},
+    interest:'Buy this piece', fName:'', fEmail:'', fMsg:'', sent:false, vw:window.innerWidth, vh:window.innerHeight };
+
+  componentDidMount() {
+    this.tx=.5; this.ty=.45; this.last=0; this.frame=0; let prev=performance.now();
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tick = now => {
+      const dt=(now-prev)/1000; prev=now; this.frame++;
+      const st=this.state;
+      if (st.screen==='home' && !reduce) {
+        let tx=this.tx, ty=this.ty;
+        // Idle: the light drifts in a slow orbit so the relief keeps catching it.
+        if (now-this.last>2500) { const t=now/2600; tx=.5+.42*Math.cos(t); ty=.45+.38*Math.sin(t); }
+        const lx=st.lx+(tx-st.lx)*.12, ly=st.ly+(ty-st.ly)*.12;
+        if (this.frame%2===0 && (Math.abs(lx-st.lx)>.002||Math.abs(ly-st.ly)>.002)) this.setState({lx,ly});
+      }
+      if (st.screen==='detail' && st.view==='video' && st.playing && this.frame%2===0) this.setState({vidT:(st.vidT+dt*2)%12});
+      this.raf=requestAnimationFrame(tick);
+    };
+    this.raf=requestAnimationFrame(tick);
+    this.onResize=()=>this.setState({vw:window.innerWidth,vh:window.innerHeight});
+    window.addEventListener('resize',this.onResize);
+  }
+  componentWillUnmount(){ cancelAnimationFrame(this.raf); window.removeEventListener('resize',this.onResize); }
+
+  go(screen, extra={}) { this.setState({screen,...extra}); window.scrollTo(0,0); }
+  open(id) { this.go('detail',{artId:id,view:'front',sent:false,fMsg:''}); }
+
+  filtered() {
+    const {q,fFam,fTheme,fShape,fRoom}=this.state; const qq=q.trim().toLowerCase();
+    return ARTS.filter(a => (!fFam||a.fam===fFam)&&(!fTheme||a.theme===fTheme)&&(!fShape||a.shape===fShape)&&(!fRoom||a.rooms.includes(fRoom))&&
+      (!qq || [a.title,a.theme,FAM[a.fam].label,SHAPES[a.shape],...a.rooms,...a.cols].join(' ').toLowerCase().includes(qq)));
+  }
+  chip(active,onClick,label,extra={},activeBg='#E9E1D5') { return {label,onClick,bg:active?activeBg:'transparent',bd:active?INK:'rgba(43,38,34,.25)',...extra}; }
+
+  viewEl(a, v, uid, small) {
+    const st=this.state; const wp=WPCT[a.shape];
+    const stage=(bg,...kids)=>h('div',{style:{position:'absolute',inset:0,background:bg,display:'flex',alignItems:'center',justifyContent:'center',overflow:'hidden'}},...kids);
+    const box=o=>h('div',{style:{width:wp+'%'}},artBox(a,{uid,...o}));
+    const slab=(rx,ry,az,el,D)=>{
+      const flatEdge=a.shape==='round'||a.shape==='arch'; const edge=C[a.cols[0]];
+      const kids=[h('div',{key:'f',style:{transform:`translateZ(${D/2}px)`,backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden'}},artBox(a,{uid,az,el})),
+        h('div',{key:'b',style:{position:'absolute',inset:0,borderRadius:RAD[a.shape],background:'#D8CCB9',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',transform:`translateZ(${-D/2}px) rotateY(180deg)`}})];
+      if(!flatEdge) kids.push(
+        h('div',{key:'r',style:{position:'absolute',top:0,height:'100%',width:D,left:`calc(100% - ${D/2}px)`,background:edge,filter:'brightness(.86)',transform:'rotateY(90deg)'}}),
+        h('div',{key:'l',style:{position:'absolute',top:0,height:'100%',width:D,left:-D/2,background:edge,filter:'brightness(.8)',transform:'rotateY(90deg)'}}),
+        h('div',{key:'t',style:{position:'absolute',left:0,width:'100%',height:D,top:-D/2,background:edge,filter:'brightness(.95)',transform:'rotateX(90deg)'}}),
+        h('div',{key:'bt',style:{position:'absolute',left:0,width:'100%',height:D,top:`calc(100% - ${D/2}px)`,background:edge,filter:'brightness(.75)',transform:'rotateX(90deg)'}}));
+      return h('div',{style:{width:wp+'%',perspective:'1600px'}},
+        h('div',{style:{position:'relative',transformStyle:'preserve-3d',transform:`rotateX(${rx}deg) rotateY(${ry}deg)`}},...kids));
+    };
+    switch(v){
+      case 'front': return stage('#EFEAE2',box({az:270,el:62}));
+      case 'raking': return stage('#E4DED4',box({az:st.rakeAz,el:12}));
+      case 'macro': return stage(C[a.cols[1]],h('div',{style:{position:'absolute',inset:0,transform:'scale(3.4)',transformOrigin:'42% 46%'}},artSvg(a,{uid,az:200,el:20,relief:a.relief*1.5})));
+      case 'room': return stage('linear-gradient(115deg,#F2ECE2 0%,#E7DFD3 50%,#E2D9CC 100%)',
+        h('div',{key:'fl',style:{position:'absolute',left:0,right:0,bottom:0,height:'21%',background:'#D8CBB8'}}),
+        h('div',{key:'cn',style:{position:'absolute',left:'18%',right:'18%',bottom:'21%',height:'8%',background:'#C8B59D',borderRadius:'4px 4px 0 0'}}),
+        h('div',{key:'ar',style:{position:'absolute',top:a.shape==='land'?'24%':'12%',width:(wp*.52)+'%'}},artBox(a,{uid,az:300,el:40})));
+      case 'angled': return stage('#EAE4DB',slab(4,-36,250,30,small?6:18));
+      case '3d': return stage('#E9E3DA',slab(st.rx,st.ry,225-st.ry*1.4,Math.max(14,34+st.rx),18));
+      case 'video': { const t=st.vidT; return stage('#2E2925',box({az:(150+t*30)%360,el:14+10*Math.sin(t*.5)})); }
+    }
+  }
+
+  // ───────── Nav / footer ─────────
+  nav(m) {
+    const link=(label,fn)=>html`<span onClick=${fn} className="hov-rose" style="cursor:pointer;color:${INK}">${label}</span>`;
+    return html`<nav style="position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px clamp(16px,4vw,56px);background:rgba(247,244,239,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(43,38,34,.08)">
+      <div onClick=${()=>this.go('home')} style="cursor:pointer;display:flex;align-items:baseline;gap:10px">
+        <span style="font-family:'Instrument Serif',serif;font-size:${m?24:28}px;font-style:italic;line-height:1">Cozy</span>
+        <span style="font-size:10px;letter-spacing:${m?'.22em':'.32em'};text-transform:uppercase;color:#7A7067">Texture Art</span>
+      </div>
+      <div style="display:flex;gap:${m?'14px':'clamp(18px,3vw,40px)'};font-size:${m?10:12}px;letter-spacing:${m?'.16em':'.3em'};text-transform:uppercase">
+        ${link('Collection',()=>this.go('collection'))}
+        ${link('About',()=>this.go('about'))}
+        ${link('Search',()=>{ this.go('collection'); setTimeout(()=>this.searchEl&&this.searchEl.focus(),60); })}
+      </div>
+    </nav>`;
+  }
+  footer() {
+    return html`<footer style="padding:48px clamp(16px,4vw,56px);border-top:1px solid rgba(43,38,34,.12);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:20px">
+      <span style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px">${ARTIST}</span>
+      <div style="display:flex;flex-wrap:wrap;gap:28px;font-size:11px;letter-spacing:.3em;text-transform:uppercase">
+        <a href="#">Instagram</a><a href="#">Pinterest</a><a href="#">YouTube</a>
+      </div>
+      <span style="font-size:12px;color:#7A7067">Hand-built, layer by layer · © 2026</span>
+    </footer>`;
+  }
+
+  // ───────── Home ─────────
+  home(m) {
+    const st=this.state; const W=st.vw, H=Math.max(760,st.vh-66);
+    const L = m
+      ? [['morning-plaster',5,50,'30vw',-2,.2,.56,.7],['petal-study',64,49,'28vw',3,.78,.55,1],['lilac-doorway',38,57,'24vw',2,.5,.64,.8],['quiet-field',6,77,'30vw',-3,.2,.84,1.1],['low-tide',55,81,'38vw',1,.74,.88,.5]]
+      : [['morning-plaster',4,9,'17vw',-2,.12,.36,.7],['petal-study',10,59,'13vw',3,.165,.75,1],['lilac-doorway',79,7,'14vw',2,.86,.33,.8],['quiet-field',72,58,'14.5vw',-3,.79,.77,1.1],['low-tide',39,73,'20vw',1,.5,.88,.5]];
+    const heroArts = L.map(([id,l,t,w,rot,cx,cy,d])=>{
+      const a=byId(id); const dx=(st.lx-cx)*W, dy=(st.ly-cy)*H; const dist=Math.hypot(dx,dy);
+      const az=Math.atan2(dy,dx)*180/Math.PI; const el=Math.max(14,Math.min(48,52-dist/18));
+      const px=(st.lx-.5)*-28*d, py=(st.ly-.45)*-20*d;
+      return html`<div onClick=${()=>this.open(id)} key=${id} style="position:absolute;left:${l}%;top:${t}%;width:${w};transform:translate(${px.toFixed(1)}px,${py.toFixed(1)}px) rotate(${rot}deg);cursor:pointer;will-change:transform">
+        ${artBox(a,{uid:'h-'+id,az,el})}
+        <div style="margin-top:${m?8:14}px;font-size:${m?8:10}px;letter-spacing:.3em;text-transform:uppercase;color:#7A7067;text-align:center">${a.title}</div>
+      </div>`;
+    });
+    const heroMove = e=>{ if(!this.hero) return; const r=this.hero.getBoundingClientRect(); this.tx=(e.clientX-r.left)/r.width; this.ty=(e.clientY-r.top)/r.height; this.last=performance.now(); };
+
+    const ca=byId('low-tide');
+    const setC=e=>{ const r=this.cmpEl.getBoundingClientRect(); this.setState({cmp:Math.max(2,Math.min(98,(e.clientX-r.left)/r.width*100))}); };
+    const featured=['rose-dune','sage-hours','moon-bowl','clay-arch'].map(id=>{ const a=byId(id); return html`
+      <div key=${id} onClick=${()=>this.open(id)} style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:22px">
+        <div style="width:${{rect:'78%',square:'86%',round:'80%',arch:'68%',land:'100%'}[a.shape]}">${artBox(a,{uid:'f-'+id,az:230,el:30})}</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+          <div style="font-size:13px;letter-spacing:.28em;text-transform:uppercase">${a.title}</div>
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;color:#5A5149">${a.dims}</div>
+          <div style="font-size:12px;letter-spacing:.2em;color:#7A7067">${inr(a.price)}</div>
+        </div>
+      </div>`; });
+    const why=[['Depth you can touch','Ridges, knife marks and soft peaks stand off the canvas. Run your hand over it. Go on.'],
+      ['Built in layers','Texture paste goes on in two or three coats, each one left to dry before the next. Colour only comes once the surface is set.'],
+      ['One of one','Knife marks and ridges can’t be repeated exactly. Every piece is signed, dated and never reproduced.']];
+
+    return html`
+    <section data-screen-label="01 Landing" ref=${el=>{this.hero=el;}} onMouseMove=${heroMove} style="position:relative;height:${H}px;overflow:hidden">
+      ${heroArts}
+      <div style="position:absolute;left:50%;top:${m?'24%':'44%'};transform:translate(-50%,-50%);width:${m?'calc(100vw - 32px)':'min(560px,46vw)'};text-align:center;display:flex;flex-direction:column;align-items:center;gap:${m?16:22}px;pointer-events:none">
+        ${eyebrow('New work · Autumn 2026')}
+        <h1 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(52px,7.2vw,112px);line-height:.92;letter-spacing:-.01em">Art you can <span style="font-style:italic">feel.</span></h1>
+        <p style="margin:0;font-size:${m?15:16}px;line-height:1.65;color:#5A5149;max-width:420px;text-wrap:pretty">Each piece is sculpted by hand. Texture paste goes onto gesso-primed canvas with a palette knife, is pushed into peaks and ridges, dried, then painted in soft pastels and sealed.</p>
+        <span onClick=${()=>this.go('collection')} style="pointer-events:auto;cursor:pointer;font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:${INK};border-bottom:1px solid ${INK};padding-bottom:6px">View the collection →</span>
+      </div>
+    </section>
+
+    <section data-screen-label="01b Texture vs print" style="${SECT};padding-top:${m?80:120}px;padding-bottom:100px;display:flex;flex-direction:column;align-items:center;gap:40px">
+      ${eyebrow('What makes it texture art')}
+      <h2 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,72px);line-height:1;text-align:center;max-width:820px">A print is flat. <span style="font-style:italic">This is sculpted.</span></h2>
+      <div ref=${el=>{this.cmpEl=el;}} onPointerDown=${e=>{ this.cmpDrag=true; e.currentTarget.setPointerCapture(e.pointerId); setC(e); }} onPointerMove=${e=>{ if(this.cmpDrag) setC(e); }} onPointerUp=${()=>{ this.cmpDrag=false; }}
+        style="position:relative;width:min(1080px,100%);aspect-ratio:${m?'4 / 5':'16 / 10'};overflow:hidden;cursor:ew-resize;touch-action:none;box-shadow:0 30px 60px -30px rgba(70,50,30,.35);user-select:none">
+        <div style="position:absolute;inset:0">${artSvg(ca,{uid:'cf',flat:true})}</div>
+        <div style="position:absolute;inset:0;clip-path:inset(0 0 0 ${st.cmp}%)">${artSvg(ca,{uid:'ct',az:200,el:30,relief:4.5})}</div>
+        <div style="position:absolute;top:0;bottom:0;left:${st.cmp}%;width:1.5px;background:${INK};transform:translateX(-50%)">
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:${PAPER};border:1.5px solid ${INK};display:flex;align-items:center;justify-content:center;font-size:16px">⇆</div>
+        </div>
+        <div style="position:absolute;left:${m?12:20}px;bottom:${m?12:20}px;background:rgba(247,244,239,.92);padding:10px 14px;font-size:${m?9:11}px;letter-spacing:.28em;text-transform:uppercase">Printed canvas</div>
+        <div style="position:absolute;right:${m?12:20}px;bottom:${m?12:20}px;background:rgba(247,244,239,.92);padding:10px 14px;font-size:${m?9:11}px;letter-spacing:.28em;text-transform:uppercase">Texture art${m?'':' · 4–8 mm relief'}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px;width:min(1080px,100%);margin-top:20px">
+        ${why.map(([t,p])=>html`<div key=${t} style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-family:'Instrument Serif',serif;font-size:28px">${t}</div>
+          <p style="margin:0;font-size:15px;line-height:1.65;color:#5A5149">${p}</p>
+        </div>`)}
+      </div>
+    </section>
+
+    <section data-screen-label="01c Featured" style="${SECT};padding-top:60px;padding-bottom:110px;display:flex;flex-direction:column;align-items:center;gap:64px">
+      ${eyebrow('Featured pieces')}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px 40px;width:100%;max-width:1320px;align-items:end">${featured}</div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 28px;font-size:12px;letter-spacing:.28em;text-transform:uppercase">
+        <span style="color:#7A7067">Browse by room</span>
+        ${['Living room','Bedroom','Entryway','Dining'].map(r=>html`<span key=${r} className="hov-ul" onClick=${()=>this.go('collection',{fRoom:r,fFam:null,fTheme:null,fShape:null,q:''})} style="cursor:pointer;border-bottom:1px solid rgba(43,38,34,.3);padding-bottom:4px">${r}</span>`)}
+      </div>
+    </section>
+
+    <section data-screen-label="01d Artist" style="${SECT};padding-top:100px;padding-bottom:100px;background:#F0EBE3;display:flex;flex-wrap:wrap;gap:64px;align-items:center;justify-content:center">
+      <div style="flex:0 1 380px;aspect-ratio:4 / 5;background:repeating-linear-gradient(135deg,#E6DED2 0 10px,#EDE6DC 10px 20px);display:flex;align-items:flex-end;padding:16px;box-sizing:border-box">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7A7067">portrait · at the studio table</span>
+      </div>
+      <div style="flex:1 1 300px;max-width:560px;display:flex;flex-direction:column;gap:26px">
+        <div style="font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:#7A7067">From the studio</div>
+        <p style="margin:0;font-family:'Instrument Serif',serif;font-size:clamp(32px,3.4vw,48px);line-height:1.12">“I want people to reach out and touch the wall before they read the label.”</p>
+        <p style="margin:0;font-size:16px;line-height:1.7;color:#5A5149">Every Cozy Texture Art piece is made by hand in a small studio, each colour mixed until it's soft enough to live with. Most pieces take three to five weeks, because each layer of texture paste has to dry fully before the next.</p>
+        <span onClick=${()=>this.go('about')} style="cursor:pointer;font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:${INK};border-bottom:1px solid ${INK};padding-bottom:6px;align-self:flex-start">Meet the artist →</span>
+      </div>
+    </section>`;
+  }
+
+  // ───────── Collection ─────────
+  collection(m) {
+    const st=this.state; const res=this.filtered();
+    const tog=(k,val)=>()=>this.setState(s=>({[k]:s[k]===val?null:val,sIdx:0}));
+    const IC={rect:['11px','14px','1px'],square:['13px','13px','1px'],round:['14px','14px','50%'],arch:['11px','15px','6px 6px 1px 1px'],land:['16px','11px','1px']};
+    const row=(label,chips)=>html`<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px">
+      <span style="width:${m?'100%':'90px'};font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#7A7067">${label}</span>${chips}</div>`;
+    const famChips=Object.keys(FAM).map(k=>{ const c=this.chip(st.fFam===k,tog('fFam',k),FAM[k].label,{pad:'8px 16px 8px 10px'});
+      return html`<span key=${k}>${chipBtn(c,html`<span style="display:flex">${FAM[k].dots.map(n=>html`<span key=${n} style="width:18px;height:18px;border-radius:50%;background:${C[n]};margin-right:-5px;border:1.5px solid ${PAPER}"></span>`)}</span><span style="margin-left:6px">${c.label}</span>`)}</span>`; });
+    const themeChips=THEMES.map(t=>html`<span key=${t}>${chipBtn(this.chip(st.fTheme===t,tog('fTheme',t),t))}</span>`);
+    const shapeChips=Object.keys(SHAPES).map(k=>{ const c=this.chip(st.fShape===k,tog('fShape',k),SHAPES[k],{pad:'8px 16px 8px 12px'});
+      return html`<span key=${k}>${chipBtn(c,html`<span style="width:${IC[k][0]};height:${IC[k][1]};border-radius:${IC[k][2]};border:1.5px solid ${INK}"></span>${c.label}`)}</span>`; });
+    const roomChips=ROOMS.map(r=>html`<span key=${r}>${chipBtn(this.chip(st.fRoom===r,tog('fRoom',r),r))}</span>`);
+
+    const active=!!(st.q.trim()||st.fFam||st.fTheme||st.fShape||st.fRoom);
+    const RM=AROOMS.find(r=>r.k===st.room);
+    const list = active ? res : RM ? ARTS.filter(RM.f) : [];
+    const isRooms=!active&&!RM, noResults=active&&res.length===0, inRoom=!!RM&&!active;
+    let countLabel=res.length+(res.length===1?' piece':' pieces');
+    if(isRooms) countLabel=AROOMS.length+' rooms · '+ARTS.length+' pieces'; else if(inRoom) countLabel=RM.name+' · '+list.length+' pieces';
+
+    const artRooms=AROOMS.map((r,ri)=>{ const ws=ARTS.filter(r.f); return html`
+      <div key=${r.k} className="hov-fade" onClick=${()=>{ this.setState({room:r.k,sIdx:0}); window.scrollTo(0,0); }} style="flex:0 0 ${m?'78vw':'clamp(280px,calc(25% - 30px),380px)'};scroll-snap-align:start;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:26px">
+        <div style="position:relative;width:100%;height:${m?340:400}px;overflow:hidden">
+          <div style="position:absolute;inset:0">${artSvg({id:'cv-'+r.k,title:r.name,shape:'rect',seed:70+ri*9,freq:'0.008 0.02',relief:3.2,...r.cover},{uid:'cv-'+r.k,az:210,el:38})}</div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:22px 20px 20px;background:linear-gradient(to top,rgba(247,244,239,.95),rgba(247,244,239,0));display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:10px;letter-spacing:.36em;text-transform:uppercase;color:${INK}">Room ${String(ri+1).padStart(2,'0')}</span>
+            <span style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1;color:${INK}">${r.name}</span>
+          </div>
+          <div style="position:absolute;top:14px;right:14px;width:58px;height:58px;border-radius:50%;border:1px solid ${INK};background:rgba(247,244,239,.9);display:flex;align-items:center;justify-content:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;text-align:center;line-height:1.2">${ws.length+(ws.length===1?' work':' works')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:19px;color:#5A5149">${r.sub}</div>
+          <p style="margin:4px 0 0;font-size:14px;line-height:1.6;color:#5A5149;max-width:300px;text-wrap:pretty">${r.text}</p>
+          <span style="margin-top:8px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#7A7067">Enter room →</span>
+        </div>
+      </div>`; });
+
+    let single=null;
+    if (list.length) {
+      const i=Math.min(st.sIdx,list.length-1); const a=list[i]; const [w,H]=DIM[a.shape];
+      const specs=SHAPES[a.shape]+' · '+a.mm+' relief · '+a.theme;
+      const sPrev=()=>this.setState({sIdx:(i-1+list.length)%list.length}), sNext=()=>this.setState({sIdx:(i+1)%list.length});
+      const op=()=>this.open(a.id);
+      single=html`<div style="display:flex;flex-direction:column;align-items:center;gap:36px;padding-top:20px">
+        ${eyebrow((active?'Your selection':RM.name)+' · '+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0'))}
+        <div style="display:flex;align-items:center;justify-content:center;gap:clamp(12px,4vw,56px);width:100%">
+          ${roundBtn(sPrev,'←',m?44:56)}
+          <div onClick=${op} style="width:min(${(w/H*58).toFixed(1)}vh, ${m?'56vw':'64vw'});cursor:pointer">${artBox(a,{uid:'s-'+a.id,az:220,el:26})}</div>
+          ${roundBtn(sNext,'→',m?44:56)}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+          <div style="font-family:'Instrument Serif',serif;font-size:40px;letter-spacing:.02em">${a.title}</div>
+          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:19px;color:#5A5149">${ARTIST}, 2026 · ${a.dims}</div>
+          <p style="margin:6px 0 0;max-width:540px;font-size:15px;line-height:1.65;color:#5A5149;text-wrap:pretty">${a.sig}</p>
+          <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7A7067">Texture paste & acrylic · ${specs}</div>
+          <div style="font-size:14px;letter-spacing:.18em">${inr(a.price)}</div>
+          <span onClick=${op} className="hov-ink" style="cursor:pointer;margin-top:14px;font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:#7A7067">View work →</span>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          ${list.map((b,j)=>html`<span key=${b.id} onClick=${()=>this.setState({sIdx:j})} title=${b.title} style="width:20px;height:20px;border-radius:50%;background:${C[b.cols[1]]};cursor:pointer;box-shadow:${j===i?`0 0 0 2px ${PAPER}, 0 0 0 3.5px ${INK}`:'none'}"></span>`)}
+        </div>
+      </div>`;
+    }
+
+    return html`<section data-screen-label="02 Collection" style="${SECT};padding-top:64px;padding-bottom:120px;display:flex;flex-direction:column;gap:40px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:22px;text-align:center">
+        ${eyebrow('The collection')}
+        <h1 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,5.4vw,80px);line-height:1">Find the one for <span style="font-style:italic">your wall.</span></h1>
+        <input ref=${el=>{this.searchEl=el;}} value=${st.q} onChange=${e=>this.setState({q:e.target.value,sIdx:0})} placeholder="Search by name, colour, mood or room" aria-label="Search the collection" style="width:min(560px,100%);box-sizing:border-box;border:none;border-bottom:1.5px solid ${INK};background:transparent;padding:14px 4px;font-size:${m?16:18}px;text-align:center;outline:none;color:${INK}" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;border-top:1px dotted rgba(43,38,34,.35);border-bottom:1px dotted rgba(43,38,34,.35);padding:24px 0">
+        ${row('Palette',famChips)}${row('Theme',themeChips)}${row('Shape',shapeChips)}${row('Room',roomChips)}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px">
+        <div style="display:flex;align-items:center;gap:20px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#7A7067">
+          <span>${countLabel}</span>
+          <span onClick=${()=>this.setState({q:'',fFam:null,fTheme:null,fShape:null,fRoom:null,room:null,sIdx:0})} style="cursor:pointer;color:#8E5A55">Clear filters</span>
+        </div>
+        ${inRoom && html`<span onClick=${()=>this.setState({room:null,sIdx:0})} style="cursor:pointer;font-size:12px;letter-spacing:.3em;text-transform:uppercase;border-bottom:1px solid ${INK};padding-bottom:4px">← All art rooms</span>`}
+      </div>
+      ${noResults && html`<p style="margin:40px 0;text-align:center;font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;color:#5A5149">Nothing matches yet. Try a softer search, or write in about a commission.</p>`}
+      ${isRooms && html`<div style="display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px">
+          ${eyebrow('Art rooms')}
+          <div style="display:flex;gap:12px">
+            ${roundBtn(()=>this.rowEl&&this.rowEl.scrollBy({left:-this.rowEl.clientWidth*.8,behavior:'smooth'}),'←')}
+            ${roundBtn(()=>this.rowEl&&this.rowEl.scrollBy({left:this.rowEl.clientWidth*.8,behavior:'smooth'}),'→')}
+          </div>
+        </div>
+        <div ref=${el=>{this.rowEl=el;}} className="noscroll" style="display:flex;gap:${m?20:40}px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:10px 0 20px">${artRooms}</div>
+      </div>`}
+      ${single}
+    </section>`;
+  }
+
+  // ───────── Detail ─────────
+  detail(m) {
+    const st=this.state; const a=byId(st.artId); const idx=ARTS.indexOf(a);
+    const specs=[{k:'Size',v:a.dims+' · original'},{k:'Relief',v:a.mm+' at the highest ridge'},{k:'Medium',v:'Texture paste and acrylic on gesso-primed, gallery-wrapped canvas, varnished'},{k:'Shape',v:SHAPES[a.shape]},{k:'Suits',v:a.rooms.join(', ')}];
+    const is3d=st.view==='3d', isVideo=st.view==='video', isRaking=st.view==='raking';
+    const stDown=e=>{ if(st.view!=='3d') return; this.drag={x:e.clientX,y:e.clientY,rx:st.rx,ry:st.ry}; e.currentTarget.setPointerCapture(e.pointerId); };
+    const stMove=e=>{ if(!this.drag||this.state.view!=='3d') return; const d=this.drag; this.setState({ry:Math.max(-170,Math.min(170,d.ry+(e.clientX-d.x)*.45)),rx:Math.max(-40,Math.min(40,d.rx-(e.clientY-d.y)*.3))}); };
+    const toEnquire=()=>{ if(this.enqEl) window.scrollTo({top:this.enqEl.getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'}); };
+    const fMsg=st.fMsg || `Hi, I'd love to know more about ${a.title}.`;
+    const pa=ARTS[(idx-1+ARTS.length)%ARTS.length], na=ARTS[(idx+1)%ARTS.length];
+    const toggleBtn=(on,onClick,label)=>html`<button onClick=${onClick} style="padding:12px 18px;border:1px solid ${INK};background:${on?INK:'transparent'};color:${on?PAPER:INK};cursor:pointer;font-size:11px;letter-spacing:.26em;text-transform:uppercase">${label}</button>`;
+    const field=(label,input)=>html`<label style="display:flex;flex-direction:column;gap:6px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#7A7067">${label}${input}</label>`;
+    const FIELD=`border:none;border-bottom:1px solid ${INK};background:transparent;padding:10px 0;font-size:17px;outline:none;color:${INK};letter-spacing:0;text-transform:none`;
+
+    return html`
+    <section data-screen-label="03 Artwork detail" style="${SECT};padding-top:36px;padding-bottom:90px;display:flex;flex-direction:column;gap:28px">
+      <div style="font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#7A7067;display:flex;flex-wrap:wrap;gap:10px">
+        <span onClick=${()=>this.go('home')} style="cursor:pointer">Home</span><span>/</span><span onClick=${()=>this.go('collection')} style="cursor:pointer">Collection</span><span>/</span><span style="color:${INK}">${a.title}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(32px,5vw,72px);align-items:flex-start">
+        <div style="flex:1 1 ${m?'100%':'520px'};min-width:0;display:flex;flex-direction:column;gap:16px">
+          <div onPointerDown=${stDown} onPointerMove=${stMove} onPointerUp=${()=>{ this.drag=null; }} style="position:relative;width:100%;aspect-ratio:1 / 1;overflow:hidden;touch-action:${is3d?'none':'auto'};cursor:${is3d?'grab':'default'};user-select:none">
+            ${this.viewEl(a,st.view,'st-'+a.id+'-'+st.view,false)}
+            <div style="position:absolute;top:18px;left:18px;background:rgba(247,244,239,.92);padding:8px 12px;font-size:10px;letter-spacing:.3em;text-transform:uppercase">${VLABEL[st.view]}</div>
+            ${isRaking && html`<div style="position:absolute;left:18px;right:18px;bottom:18px;background:rgba(247,244,239,.92);padding:12px 16px;display:flex;align-items:center;gap:16px">
+              <span style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap">Raking angle</span>
+              <input type="range" min="0" max="360" value=${st.rakeAz} onChange=${e=>this.setState({rakeAz:+e.target.value})} aria-label="Raking light angle" style="flex:1" />
+            </div>`}
+            ${is3d && html`<div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(247,244,239,.92);padding:8px 14px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap">Drag to turn · see the 3 cm depth</div>`}
+            ${isVideo && html`<div style="position:absolute;left:18px;right:18px;bottom:18px;background:rgba(43,38,34,.82);color:${PAPER};padding:10px 14px;display:flex;align-items:center;gap:14px">
+              <button onClick=${()=>this.setState(s=>({playing:!s.playing}))} aria-label=${st.playing?'Pause':'Play'} style="border:none;background:transparent;color:${PAPER};cursor:pointer;font-size:14px;width:24px">${st.playing?'❚❚':'▶'}</button>
+              <div style="flex:1;height:2px;background:rgba(247,244,239,.3);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:${(st.vidT/12*100).toFixed(1)}%;background:${PAPER}"></div></div>
+              <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px">0:${String(Math.floor(st.vidT)).padStart(2,'0')} / 0:12</span>
+            </div>
+            <div style="position:absolute;top:18px;right:18px;font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#5A5149;background:rgba(247,244,239,.8);padding:4px 8px">${m?'film placeholder':'studio film placeholder · turning the piece'}</div>`}
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:stretch">
+            ${VIEWS.map(x=>html`<div key=${x.k} onClick=${()=>this.setState({view:x.k})} style="width:${m?60:84}px;display:flex;flex-direction:column;gap:6px;cursor:pointer">
+              <div style="position:relative;width:${m?60:84}px;height:${m?60:84}px;overflow:hidden;outline:${st.view===x.k?`1.5px solid ${INK}`:'1px solid rgba(43,38,34,.12)'};outline-offset:2px">${this.viewEl(a,x.k,'th-'+a.id+'-'+x.k,true)}</div>
+              <span style="font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#5A5149;text-align:center">${x.l}</span>
+            </div>`)}
+            <div style="display:flex;flex-direction:${m?'row':'column'};gap:10px;margin-left:${m?'0':'auto'};justify-content:flex-start">
+              ${toggleBtn(is3d,()=>this.setState({view:'3d',rx:-8,ry:-24}),'Turn it in 3D')}
+              ${toggleBtn(isVideo,()=>this.setState({view:'video',playing:true}),'Watch the film')}
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1 1 ${m?'100%':'380px'};min-width:0;display:flex;flex-direction:column;gap:26px">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:11px;letter-spacing:.38em;text-transform:uppercase;color:#7A7067">Texture art · 2026</div>
+            <h1 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,4.6vw,68px);line-height:1">${a.title}</h1>
+            <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:20px;color:#5A5149">by ${ARTIST}</div>
+          </div>
+          <div style="font-size:22px;letter-spacing:.04em">${inr(a.price)}</div>
+          <div style="display:flex;flex-direction:column;border-top:1px dotted rgba(43,38,34,.35)">
+            ${specs.map(s=>html`<div key=${s.k} style="display:flex;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px dotted rgba(43,38,34,.35);font-size:14px">
+              <span style="font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:#7A7067;padding-top:2px">${s.k}</span>
+              <span style="text-align:right">${s.v}</span>
+            </div>`)}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:11px;letter-spacing:.38em;text-transform:uppercase;color:#7A7067">What it holds</div>
+            <p style="margin:0;font-family:'Instrument Serif',serif;font-size:24px;line-height:1.3;text-wrap:pretty">${a.sig}</p>
+          </div>
+          <div style="display:flex">
+            ${a.cols.map(n=>html`<div key=${n} style="flex:1;display:flex;flex-direction:column;gap:6px">
+              <div style="height:44px;background:${C[n]}"></div>
+              <span style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#5A5149">${n}</span>
+            </div>`)}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <button onClick=${toEnquire} className="hov-dark" style="padding:20px;border:none;background:${INK};color:${PAPER};cursor:pointer;font-size:12px;letter-spacing:.32em;text-transform:uppercase">Enquire about this piece</button>
+            <button onClick=${()=>this.setState(s=>({saved:{...s.saved,[a.id]:!s.saved[a.id]}}))} style="padding:18px;border:1px solid ${INK};background:transparent;color:${INK};cursor:pointer;font-size:12px;letter-spacing:.32em;text-transform:uppercase">${st.saved[a.id]?'Saved ✓':'Save for later'}</button>
+            <p style="margin:6px 0 0;font-size:13px;line-height:1.6;color:#7A7067">One of one. Crated and shipped in 5–7 days; international on request. A piece like this can also be made in your size.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-screen-label="03b Enquire" ref=${el=>{this.enqEl=el;}} style="${SECT};background:#F0EBE3;padding-top:90px;padding-bottom:90px;display:flex;flex-wrap:wrap;gap:56px;justify-content:center">
+      <div style="flex:1 1 300px;max-width:460px;display:flex;flex-direction:column;gap:20px">
+        ${eyebrow('Enquire','align-self:flex-start')}
+        <h2 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(38px,4vw,56px);line-height:1.02">Ask anything about <span style="font-style:italic">${a.title}.</span></h2>
+        <p style="margin:0;font-size:16px;line-height:1.7;color:#5A5149">Every message gets a personal reply, usually within a day. Send a photo of your wall if you like, and you'll get an honest answer on whether this piece suits it.</p>
+        <div style="width:140px;margin-top:10px">${artBox(a,{uid:'e-'+a.id,az:230,el:30})}</div>
+      </div>
+      <div style="flex:1 1 300px;max-width:600px">
+        ${!st.sent ? html`<div style="display:flex;flex-direction:column;gap:22px">
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            ${['Buy this piece','A similar commission','Visit the studio'].map(l=>{ const c=this.chip(st.interest===l,()=>this.setState({interest:l}),l,{pad:'10px 16px'},'#E2D8CA'); return html`<span key=${l}>${chipBtn(c)}</span>`; })}
+          </div>
+          ${field('Your name',html`<input value=${st.fName} onChange=${e=>this.setState({fName:e.target.value})} autoComplete="name" style=${FIELD} />`)}
+          ${field('Email',html`<input type="email" value=${st.fEmail} onChange=${e=>this.setState({fEmail:e.target.value})} autoComplete="email" style=${FIELD} />`)}
+          ${field('Message',html`<textarea value=${fMsg} onChange=${e=>this.setState({fMsg:e.target.value})} rows="4" style=${FIELD+';line-height:1.5;resize:vertical'}></textarea>`)}
+          <button onClick=${()=>this.setState({sent:true})} className="hov-dark" style="align-self:flex-start;padding:18px 34px;border:none;background:${INK};color:${PAPER};cursor:pointer;font-size:12px;letter-spacing:.32em;text-transform:uppercase">Send message</button>
+        </div>` : html`<div style="display:flex;flex-direction:column;gap:16px;padding-top:40px">
+          <div style="font-family:'Instrument Serif',serif;font-size:44px;line-height:1.05">Thank you, ${st.fName.split(' ')[0]||'friend'}.</div>
+          <p style="margin:0;font-size:16px;line-height:1.7;color:#5A5149">Your note about ${a.title} is in. A reply will reach ${st.fEmail||'you'} within a day, often with a short video of the piece in morning light.</p>
+        </div>`}
+      </div>
+    </section>
+
+    <section style="${SECT};padding-top:56px;padding-bottom:56px;display:flex;justify-content:space-between;gap:20px;font-size:12px;letter-spacing:.3em;text-transform:uppercase">
+      <span onClick=${()=>this.open(pa.id)} style="cursor:pointer">← ${pa.title}</span>
+      <span onClick=${()=>this.open(na.id)} style="cursor:pointer;text-align:right">${na.title} →</span>
+    </section>`;
+  }
+
+  // ───────── About ─────────
+  about() {
+    const S=[['morning-plaster','01','Prime','The canvas gets a coat of gesso first, so the texture paste grips and doesn’t crack as it dries.'],
+      ['sage-hours','02','Build','Texture paste goes on with a palette knife in thick coats. Each one dries fully, often overnight, before the next.'],
+      ['petal-study','03','Sculpt','While the top layer is still wet it gets dragged, pressed and scratched with the knife edge. This is where the peaks and ridges come from.'],
+      ['low-tide','04','Paint & seal','Once the relief is set it’s painted in soft acrylics, then varnished so it can be touched and dusted for years.']];
+    return html`
+    <section data-screen-label="04 About" style="${SECT};padding-top:80px;padding-bottom:80px;display:flex;flex-wrap:wrap;gap:64px;align-items:center;justify-content:center">
+      <div style="flex:1 1 320px;max-width:600px;display:flex;flex-direction:column;gap:24px">
+        ${eyebrow('About the artist','align-self:flex-start')}
+        <h1 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(56px,7vw,104px);line-height:.95">Slow art for <span style="font-style:italic">cozy walls.</span></h1>
+        <p style="margin:0;font-size:17px;line-height:1.75;color:#4A433C;text-wrap:pretty">Cozy Texture Art began with a simple wish: walls that feel as warm as a favourite sweater. Each piece is sculpted by hand from texture paste, built up in layers, then painted, so the surface catches the light differently every hour of the day.</p>
+        <p style="margin:0;font-size:17px;line-height:1.75;color:#4A433C;text-wrap:pretty">The colours stay soft on purpose. Pastels keep your eye on the surface: a strong red would shout over the texture, while a pale apricot lets you see every knife mark and ridge.</p>
+      </div>
+      <div style="flex:0 1 440px;aspect-ratio:4 / 5;background:repeating-linear-gradient(135deg,#E6DED2 0 10px,#EDE6DC 10px 20px);display:flex;align-items:flex-end;padding:16px;box-sizing:border-box">
+        <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7A7067">portrait · artist with palette knife</span>
+      </div>
+    </section>
+
+    <section data-screen-label="04b Process" style="${SECT};padding-top:60px;padding-bottom:100px;display:flex;flex-direction:column;align-items:center;gap:56px">
+      ${eyebrow('How a piece is made')}
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;width:100%;max-width:1240px">
+        ${S.map(([id,n,title,text])=>{ const a=byId(id); return html`<div key=${n} style="display:flex;flex-direction:column;gap:16px">
+          <div style="position:relative;aspect-ratio:1 / 1;overflow:hidden">${h('div',{style:{position:'absolute',inset:0,transform:'scale(2.4)',transformOrigin:'50% 50%'}},artSvg(a,{uid:'pr-'+id,az:210,el:20,relief:a.relief*1.3}))}</div>
+          <div style="font-size:11px;letter-spacing:.32em;color:#7A7067">${n}</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:30px;line-height:1">${title}</div>
+          <p style="margin:0;font-size:15px;line-height:1.65;color:#5A5149">${text}</p>
+        </div>`; })}
+      </div>
+    </section>
+
+    <section data-screen-label="04c Contact" style="${SECT};background:#F0EBE3;padding-top:90px;padding-bottom:90px;display:flex;flex-direction:column;align-items:center;gap:36px;text-align:center">
+      <h2 style="margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,5vw,72px);line-height:1;max-width:820px">Come and touch them. <span style="font-style:italic">Studio visits by appointment.</span></h2>
+      <p style="margin:0;font-size:16px;line-height:1.7;color:#5A5149;max-width:520px">Write in for a studio visit, a commission, or a video of a piece in daylight. Commissions open twice a year.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px;font-size:12px;letter-spacing:.3em;text-transform:uppercase">
+        <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">Instagram</a>
+        <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">Pinterest</a>
+        <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">YouTube · process films</a>
+        <a href="#" style="border-bottom:1px solid currentColor;padding-bottom:4px">Email the studio</a>
+      </div>
+    </section>`;
+  }
+
+  render() {
+    const st=this.state; const m=st.vw<720;
+    let body;
+    if (st.screen==='collection') body=this.collection(m);
+    else if (st.screen==='detail') body=this.detail(m);
+    else if (st.screen==='about') body=this.about(m);
+    else body=this.home(m);
+    return html`<div style="min-height:100vh;background:${PAPER};position:relative">
+      ${h('div',{'aria-hidden':true,style:{position:'fixed',inset:0,pointerEvents:'none',zIndex:60,opacity:.32,mixBlendMode:'multiply',backgroundImage:GRAIN}})}
+      ${this.nav(m)}
+      <main>${body}</main>
+      ${this.footer()}
+    </div>`;
+  }
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>
