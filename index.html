@@ -315,7 +315,7 @@ class App extends React.Component {
 
     ${featuredRow.length>0 && html`<section data-screen-label="01c Featured" style="${SECT};padding-top:60px;padding-bottom:110px;display:flex;flex-direction:column;align-items:center;gap:64px">
       ${eyebrow('Featured pieces')}
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:48px 40px;width:100%;max-width:1320px;align-items:end">${featuredRow}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,300px));justify-content:center;gap:48px 40px;width:100%;max-width:1320px;align-items:end">${featuredRow}</div>
       ${ROOMS.length>0 && html`<div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 28px;font-size:12px;letter-spacing:.28em;text-transform:uppercase">
         <span style="color:#7A7067">Browse by room</span>
         ${ROOMS.map(r=>html`<span key=${r.slug}>${this.link('/collection/'+r.slug,r.name,'border-bottom:1px solid rgba(43,38,34,.3);padding-bottom:4px','hov-ul')}</span>`)}

@@ -14,7 +14,7 @@ Single-page portfolio for **Cozy Texture Art**, built from the "Ira Mehra Textur
 - Inline style strings are parsed into React style objects by `hx`/`parseStyle`, so markup stays close to HTML. Hover states use the `.hov-*` / `.lift` classes in `<style>` (inline styles can't do `:hover`).
 - Mobile layout is chosen in JS (`m = vw < 720`), not media queries.
 - Remote: `github.com/lifedesigndpc/cozytextureart`, branch `main`.
-- Preview: the Desktop is iCloud-synced and the preview server can't read it. Copy the folder to the session scratchpad (`site/`) and serve it with `tools/dev_server.py` from there (the `cozy-texture-art` entry in `~/Desktop/.claude/launch.json`). Re-copy after every edit. Test fixtures go in the scratchpad copy only, never in the repo.
+- Preview: the Desktop is iCloud-synced and the preview server can't read it. Copy the folder to the session scratchpad (`site/`) and serve it with `tools/dev_server.py` from there (the `cozy-texture-art` entry in `~/Desktop/.claude/launch.json`). Re-copy after every edit. Test fixtures go in the scratchpad copy only, never in the repo. If you delete and recreate the folder, the running preview server keeps serving the old copy, even after a restart. Copy into a new `site-<time>` folder, repoint the launch entry, and restart; editing files in place in the current folder works.
 
 ### URLs
 | Path | Screen |

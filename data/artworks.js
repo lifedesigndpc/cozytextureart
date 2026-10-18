@@ -75,4 +75,32 @@ window.SUITS = ['Living room', 'Bedroom', 'Entryway', 'Dining', 'Kids room', 'St
 }
 */
 window.ARTWORKS = [
+  // ── Signature Pop Colours ──
+  {
+    slug: 'sherbet-rows',
+    title: 'Sherbet Rows',
+    year: 2026,
+    concept: 'Eighty-one dabs of texture paste, each pressed down and pulled with the palette knife in a single stroke, so every one ends in a soft, rounded lip. Nine rows in three bands, bubblegum, lemon and aqua, laid over a faint pencil grid that still shows between them.',
+    holds: 'A sweet-shop counter on a summer holiday, every row a different flavour. It is about the quiet joy of doing one small, satisfying thing again and again until it adds up to something bright.',
+    size: { w: 30, h: 42 },
+    depth: '',
+    relief: '',
+    medium: 'Texture paste and acrylic on canvas',
+    shape: 'portrait',
+    family: 'warm',
+    palette: [
+      { name: 'bubblegum', hex: '#D594B4' },
+      { name: 'blush', hex: '#E0C2D3' },
+      { name: 'lemon', hex: '#ECEB76' },
+      { name: 'aqua', hex: '#9BD0C7' }
+    ],
+    tags: ['pop-pastels', 'joyful', 'abstract', 'geometric'],
+    suits: ['Living room', 'Kids room', 'Bedroom'],
+    status: 'available',
+    featured: true,
+    images: {
+      front: { src: '/images/art/sherbet-rows/front.webp', w: 1131, h: 1600, alt: 'Sherbet Rows: nine rows of rounded texture-paste dabs in bubblegum pink, lemon and aqua on white canvas' },
+      room:  { src: '/images/art/sherbet-rows/room.webp',  w: 1600, h: 1200, alt: 'Sherbet Rows hung above a pale blue sideboard in a sunlit living room' }
+    }
+  }
 ];
