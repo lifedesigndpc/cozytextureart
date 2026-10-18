@@ -29,11 +29,11 @@ Single-page portfolio for **Cozy Texture Art**, built from the "Ira Mehra Textur
 Links are real `<a href>` (shareable, open in new tab) routed in-page by `link()`; the title updates per piece/room.
 
 ### Catalogue model
-- **Piece** fields (see TEMPLATE in `data/artworks.js`): `slug`, `title`, `year`, `concept` (2–3 lines: what it is, how it was made), `holds` (one brief note on what it represents → "What it holds"), `size` (`{w,h}` cm or `{d}`), optional `depth`/`relief`, `medium`, `shape`, `family`, `palette`, `tags`, `suits`, `status`, `featured`, `images`.
+- **Piece** fields (see TEMPLATE in `data/artworks.js`): `slug`, `title`, `year`, `concept` (2–3 lines: what it is, how it was made), `holds` (one brief note on what it represents → "What it holds"), `size` (`{w,h}` cm or `{d}`), optional `depth`, `medium` (default: acrylic colour mixed into texture paste, on canvas), `shape`, `family`, `palette`, `tags`, `suits`, `status`, `featured`, `images`.
 - **Tags** describe what a piece is (subject, colour story, mood). Every tag must exist in `TAGS`. Add new tags there when a piece needs one.
 - **Art rooms are tag collections**: a piece appears in every room sharing at least one tag, so one piece can hang in several rooms. Rooms with no pieces are hidden.
 - **No prices** anywhere (decision 2026-10-18). Enquiry is the only path; sold pieces switch the CTA to a commission.
-- **Placeholders removed**: no procedural artworks in the catalogue. Procedural SVG (`DECOR`, `artSvg`) survives only as illustration: the texture-vs-print slider, the four process steps, and the home hero until there are ≥3 real pieces.
+- **Placeholders removed**: no procedural artworks in the catalogue. Procedural SVG (`DECOR`, `artSvg`) survives only as illustration: the texture-vs-print slider, the four process steps, and the home hero. The home hero always keeps these drawn textures; don't swap in catalogue photos.
 - **Piece page views** are photo-based: Front, In a room, Close-up (the front photo at 2.6× following the pointer). Photos can't be relit, so raking light, 3D turn and studio film from the reference are not used.
 - Front photos are assumed tightly cropped to the canvas edge (shape mask + light-driven shadow). Set `images.front.tight: false` if a photo includes wall/background.
 
@@ -210,7 +210,6 @@ Write the way the artist would talk to a friend in the studio: warm, specific ab
 | Art rooms | "The ___ Room" or one evocative noun. Signature Pop Colours is the fixed exception | The Bloom Room · The Clay Room · The Grove |
 | Pigment names | One lower-case word from food, earth or flowers; spaced caps on swatches | pistachio · clay · bubblegum |
 | Dimensions | W × H in cm with a true ×; round works as diameter | 90 × 120 cm · 70 cm diameter |
-| Relief | mm at the highest point | 7 mm at the highest ridge |
 | Price | ₹, space, Indian grouping, no decimals; "On enquiry" if unpriced | ₹ 84,000 |
 | Credit line | Artist, year, size in italic serif | Cozy Texture Art, 2026 · 90 × 120 cm |
 | Counters | Two digits with slash, caps | 03 / 10 · Room 01 |

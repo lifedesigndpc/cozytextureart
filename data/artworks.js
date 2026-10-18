@@ -58,16 +58,15 @@ window.SUITS = ['Living room', 'Bedroom', 'Entryway', 'Dining', 'Kids room', 'St
   concept: '',                           // 2–3 lines on what the piece is and how it was made (shown in the exhibit and on the piece page)
   holds: '',                             // "What it holds": one brief note on what it represents
   size: { w: 60, h: 90 },                // cm, width × height. Round works: { d: 70 }
-  depth: '',                             // optional, e.g. '3 cm'
-  relief: '',                            // optional, e.g. '4 mm' (tallest point). Leave empty if unknown
-  medium: 'Texture paste and acrylic on canvas',
+  depth: '',                             // optional, e.g. '3 cm' (canvas depth)
+  medium: 'Acrylic colour mixed into texture paste, on canvas',
   shape: 'portrait',                     // portrait | square | round | arch | landscape
   family: 'cool',                        // warm | green | cool | neutral
   palette: [ { name: 'lilac', hex: '#C8BEDF' } ],   // 3–4 pigments from the photo; one lower-case word each
   tags: ['arches', 'calm'],              // from TAGS; these decide which art rooms it joins
   suits: ['Bedroom', 'Entryway'],        // from SUITS
   status: 'available',                   // available | sold | reserved
-  featured: false,                       // true = eligible for the home hero and featured row
+  featured: false,                       // true = shown in the home page's featured row
   images: {
     front: { src: '/images/art/lilac-doorway/front.webp', w: 1200, h: 1600, alt: '' },
     room:  { src: '/images/art/lilac-doorway/room.webp',  w: 1600, h: 1200, alt: '' }
@@ -84,8 +83,7 @@ window.ARTWORKS = [
     holds: 'A sweet-shop counter on a summer holiday, every row a different flavour. It is about the quiet joy of doing one small, satisfying thing again and again until it adds up to something bright.',
     size: { w: 30, h: 42 },
     depth: '',
-    relief: '',
-    medium: 'Texture paste and acrylic on canvas',
+    medium: 'Acrylic colour mixed into texture paste, on canvas',
     shape: 'portrait',
     family: 'warm',
     palette: [
