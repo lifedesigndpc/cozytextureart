@@ -375,27 +375,28 @@ class App extends React.Component {
           </div>
         </div>`)}</div>`; });
 
+    // Art grid: every piece in the room (or matching the filters), each linking to its page.
+    // Widths follow real canvas widths, so a 30 cm piece and a 60 cm piece read at true relative scale.
     let single=null;
     if (list.length) {
-      const i=Math.min(st.sIdx,list.length-1); const p=list[i]; const a=aspect(p.images.front);
-      const sPrev=()=>this.setState({sIdx:(i-1+list.length)%list.length}), sNext=()=>this.setState({sIdx:(i+1)%list.length});
-      single=html`<div style="display:flex;flex-direction:column;align-items:center;gap:36px;padding-top:20px">
-        ${eyebrow((active?'Your selection':RM.name)+' · '+String(i+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0'))}
-        <div style="display:flex;align-items:center;justify-content:center;gap:clamp(12px,4vw,56px);width:100%">
-          ${roundBtn(sPrev,'←',m?44:56)}
-          <div style="width:min(${(a*58).toFixed(1)}vh, ${m?'56vw':'64vw'})">${this.link('/art/'+p.slug,photo(p,{az:220,eager:true}))}</div>
-          ${roundBtn(sNext,'→',m?44:56)}
+      const widthOf=p=>p.size?(p.size.w||p.size.d||30):30;
+      const maxW=Math.max(...list.map(widthOf));
+      single=html`<div style="display:flex;flex-direction:column;gap:40px;padding-top:20px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+          ${eyebrow(active?'Your selection':RM.name)}
+          ${!active && RM.sub && html`<div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:#5A5149">${RM.sub}</div>`}
+          ${!active && RM.text && html`<p style="margin:0;max-width:520px;font-size:15px;line-height:1.65;color:#5A5149;text-wrap:pretty">${RM.text}</p>`}
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
-          <div style="font-family:'Instrument Serif',serif;font-size:40px;letter-spacing:.02em">${p.title}</div>
-          <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:19px;color:#5A5149">${ARTIST}, ${p.year} · ${dims(p)}</div>
-          <p style="margin:6px 0 0;max-width:540px;font-size:15px;line-height:1.65;color:#5A5149;text-wrap:pretty">${p.concept}</p>
-          <div style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#7A7067">${[SHAPE_LABEL[p.shape],...(p.tags||[]).slice(0,2).map(tagLabel)].filter(Boolean).join(' · ')}</div>
-          ${STATUS_LABEL[p.status] && html`<div style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#8E5A55">${STATUS_LABEL[p.status]}</div>`}
-          <span style="margin-top:14px">${this.link('/art/'+p.slug,'View work →','font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:#7A7067','hov-ink')}</span>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-          ${list.map((b,j)=>html`<span key=${b.slug} onClick=${()=>this.setState({sIdx:j})} title=${b.title} style="width:20px;height:20px;border-radius:50%;background:${(b.palette&&b.palette[1]||b.palette&&b.palette[0]||{hex:'#E9E1D5'}).hex};cursor:pointer;box-shadow:${j===i?`0 0 0 2px ${PAPER}, 0 0 0 3.5px ${INK}`:'none'}"></span>`)}
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(${m?'140px':'240px'},1fr));gap:${m?'40px 20px':'64px 48px'};align-items:end">
+          ${list.map(p=>html`<div key=${p.slug} className="lift">${this.link('/art/'+p.slug,html`
+            <div style="display:flex;flex-direction:column;align-items:center;gap:${m?14:20}px">
+              <div style="width:${(widthOf(p)/maxW*86).toFixed(1)}%">${photo(p,{az:230,small:true})}</div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center">
+                <div style="font-size:${m?11:13}px;letter-spacing:.24em;text-transform:uppercase">${p.title}</div>
+                <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:${m?16:18}px;color:#5A5149">${dims(p)}</div>
+                ${STATUS_LABEL[p.status] && html`<div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8E5A55">${STATUS_LABEL[p.status]}</div>`}
+              </div>
+            </div>`)}</div>`)}
         </div>
       </div>`;
     }

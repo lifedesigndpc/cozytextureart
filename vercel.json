@@ -1,5 +1,4 @@
 {
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/art/:slug", "destination": "/index.html" },
     { "source": "/collection", "destination": "/index.html" },

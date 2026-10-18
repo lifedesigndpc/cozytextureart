@@ -8,6 +8,7 @@ Single-page portfolio for **Cozy Texture Art**, built from the "Ira Mehra Textur
 - `data/artworks.js` — **the catalogue**: `ARTWORKS`, `ART_ROOMS`, `TAGS`, `FAMILIES`, `SUITS`, plus a commented TEMPLATE entry. Adding a piece never touches `index.html`.
 - `images/art/<slug>/` — `front.webp` (1600px), `front-sm.webp` (720px, grids/hero/thumbs), `room.webp` (1600px).
 - `tools/add_art.py <slug> <front> <room>` — resizes and strips EXIF into `images/art/<slug>/`, prints the `images` block and a suggested palette. Needs Pillow; run with plain `python3` (not `-I`, which hides the user site-packages Pillow lives in). HEIC goes through `sips` first.
+- `tools/refine_photo.py <in> <out> --bg x,y ...` — studio-cleans a front photo before `add_art.py`: evens out lighting (fits a smooth surface to the plain ground), neutral white balance, gentle colour/contrast and sharpening. Never retouches the paint. White canvas: `--neutral 16 --target 247,247,246 --color 1.03 --contrast 1.05`. Coloured ground: `--tol 45 --target <brighter ground>`. Hard sun/shadow stripes: `--global` (white balance only). `--crop` to cut wall out of frame. Approved look: 2026-10-18.
 - `tools/dev_server.py [port] [dir]` — local server with the same fallback as Vercel (unknown paths → `index.html`).
 - `vercel.json` — hosting is Vercel; rewrites `/art/:slug`, `/collection`, `/collection/:room`, `/about` to `index.html`.
 - `vendor/`, `fonts/` — React 18.3.1; Instrument Serif + Jost woff2.
@@ -20,8 +21,8 @@ Single-page portfolio for **Cozy Texture Art**, built from the "Ira Mehra Textur
 | Path | Screen |
 |---|---|
 | `/` | Home |
-| `/collection` (`?tag=<tag>`, `?q=`) | Filters + art rooms row; with a filter, the exhibit of matching pieces |
-| `/collection/<room-slug>` | Exhibit of one art room |
+| `/collection` (`?tag=<tag>`, `?q=`) | Filters + art rooms row; with a filter, a grid of matching pieces |
+| `/collection/<room-slug>` | Art grid of one room: every piece, widths at true relative canvas size, each linking to its page |
 | `/art/<slug>` | Piece page (the template) |
 | `/about` | About + creator note |
 | anything else | "This wall is empty." not-found screen |
@@ -32,6 +33,7 @@ Links are real `<a href>` (shareable, open in new tab) routed in-page by `link()
 - **Piece** fields (see TEMPLATE in `data/artworks.js`): `slug`, `title`, `year`, `concept` (2–3 lines: what it is, how it was made), `holds` (one brief note on what it represents → "What it holds"), `size` (`{w,h}` cm or `{d}`), optional `depth`, `medium` (default: acrylic colour mixed into texture paste, on canvas), `shape`, `family`, `palette`, `tags`, `suits`, `status`, `featured`, `images`.
 - **Tags** describe what a piece is (subject, colour story, mood). Every tag must exist in `TAGS`. Add new tags there when a piece needs one.
 - **Art rooms are tag collections**: a piece appears in every room sharing at least one tag, so one piece can hang in several rooms. Rooms with no pieces are hidden.
+- **Rooms show a grid, not the one-at-a-time exhibit** (user decision 2026-10-18: "art rooms > art grid > art page"). This overrides §4's "never a product grid"; keep the grid gallery-like: caption stacks, bottom-aligned, no badges.
 - **No prices** anywhere (decision 2026-10-18). Enquiry is the only path; sold pieces switch the CTA to a commission.
 - **Placeholders removed**: no procedural artworks in the catalogue. Procedural SVG (`DECOR`, `artSvg`) survives only as illustration: the texture-vs-print slider, the four process steps, and the home hero. The home hero always keeps these drawn textures; don't swap in catalogue photos.
 - **Piece page views** are photo-based: Front, In a room, Close-up (the front photo at 2.6× following the pointer). Photos can't be relit, so raking light, 3D turn and studio film from the reference are not used.
@@ -43,7 +45,7 @@ The user sends one art room at a time, two images per piece: **front** and **in 
 2. Name it per §10 (2–3 words; place, time or feeling + material/colour; "No." for series). Check the name isn't already used.
 3. Write `concept` (2–3 lines, materials and making, honest) and `holds` (one sentence on what it represents), in the §8 voice.
 4. Pick `shape`, `family`, 3–4 `palette` pigments (use the tool's hex suggestions, name each with one lower-case food/earth/flower word), `tags` from `TAGS` (add new ones if needed), `suits`.
-5. Slug = title in lower-case kebab case. Run `tools/add_art.py`, fill the TEMPLATE, append to `ARTWORKS`.
+5. Slug = title in lower-case kebab case. Refine the front photo with `tools/refine_photo.py` (check before/after), then run `tools/add_art.py` on the refined front + original room image, fill the TEMPLATE, append to `ARTWORKS`.
 6. Make sure the room the user named exists in `ART_ROOMS` with tags that pull these pieces in.
 7. Preview the piece pages, the room and the home page; then commit and push.
 
