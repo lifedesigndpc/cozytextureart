@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Studio-clean a front-on artwork photo without changing the artwork itself.
 
-Usage: python3 tools/refine_photo.py <in> <out> --bg x,y [--target R,G,B] [--tol N]
-                                     [--crop l,t,r,b] [--color 1.06] [--contrast 1.04]
+Usage: python3 tools/refine_photo.py <in> <out> [--bg auto|x,y] [--target R,G,B] [--tol N]
+         [--neutral N] [--global] [--enhance-only] [--crop l,t,r,b] [--color 1.03] [--contrast 1.05]
+
+--bg auto (default): white canvas if enough shows, else the dominant ground colour.
+--ground colour: pale painted grounds (powder blue, taupe, mauve, grey) that auto would mistake for white.
+--enhance-only: painted skies/gradients, where evening the light would erase the artwork.
 
 Only global, photographic corrections (no retouching of the paint):
   1. Even lighting: fits a smooth surface to the plain ground (the colour at --bg within
@@ -86,41 +90,73 @@ def gain_maps(size, fits, target, grid):
     return maps
 
 
+def auto_ground(im, force=None):
+    """Pick the plain ground: white canvas if enough shows, else the most common colour."""
+    small = im.resize((96, max(8, round(96 * im.height / im.width))), Image.BOX)
+    px = list(small.getdata())
+    whites = [c for c in px if max(c) - min(c) < 22 and sum(c) / 3 > 150]
+    if force != 'colour' and (force == 'white' or len(whites) > len(px) * 0.12):
+        whites.sort(key=sum)
+        return whites[len(whites) // 2], 'white'
+    q = small.quantize(colors=8, method=Image.Quantize.MEDIANCUT)
+    count, idx = max(q.getcolors())
+    pal = q.getpalette()
+    return tuple(pal[idx * 3: idx * 3 + 3]), 'colour'
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('src'); ap.add_argument('out')
-    ap.add_argument('--bg', required=True, help='x,y of a plain ground pixel (in the cropped image)')
-    ap.add_argument('--target', default='246,244,239')
-    ap.add_argument('--tol', type=int, default=36)
-    ap.add_argument('--neutral', type=int, help='use every near-grey pixel with (max-min) below this as ground (white canvases)')
-    ap.add_argument('--global', dest='glob', action='store_true', help='white balance only: one gain for the whole image (for photos with hard light patches)')
+    ap.add_argument('--bg', default='auto', help='auto, or x,y of a plain ground pixel (in the cropped image)')
+    ap.add_argument('--target', default='247,247,246')
+    ap.add_argument('--tol', type=int, default=45)
+    ap.add_argument('--neutral', type=int, help='treat near-grey pixels (after removing the cast) as ground')
+    ap.add_argument('--global', dest='glob', action='store_true', help='white balance only, one gain for the whole image')
+    ap.add_argument('--enhance-only', action='store_true', help='no lighting or white-balance change')
+    ap.add_argument('--ground', choices=['white', 'colour'], help='force the auto mode (colour keeps a painted ground\'s own colour)')
     ap.add_argument('--crop')
-    ap.add_argument('--color', type=float, default=1.06)
-    ap.add_argument('--contrast', type=float, default=1.04)
+    ap.add_argument('--color', type=float, default=1.03)
+    ap.add_argument('--contrast', type=float, default=1.05)
     a = ap.parse_args()
 
     im = ImageOps.exif_transpose(Image.open(a.src)).convert('RGB')
     if a.crop:
         im = im.crop(tuple(int(v) for v in a.crop.split(',')))
-    bx, by = (int(v) for v in a.bg.split(','))
-    ref = im.resize((im.width // 8, im.height // 8), Image.BOX).getpixel((bx // 8, by // 8))
     target = [int(v) for v in a.target.split(',')]
-    if a.glob:
-        n = 1
-        maps = [Image.new('F', im.size, target[k] / max(ref[k], 1)) for k in range(3)]
+    if a.enhance_only:
+        note = 'enhance only'
+        maps = None
     else:
-        fits, n, grid = fit_lighting(im, ref, a.tol, a.neutral)
-        maps = gain_maps(im.size, fits, target, grid)
-    bands = []
-    for band, g in zip(im.split(), maps):
-        f = ImageMath.lambda_eval(lambda e: e['min'](e['float'](e['a']) * e['b'], 255.0), a=band, b=g)
-        bands.append(f.convert('L'))
-    out = Image.merge('RGB', bands)
+        if a.bg == 'auto':
+            ref, mode = auto_ground(im, a.ground)
+            if mode == 'white':
+                a.neutral = a.neutral or 16
+            else:
+                a.neutral = None
+                target = [min(250, round(c * 1.04)) for c in ref]
+        else:
+            bx, by = (int(v) for v in a.bg.split(','))
+            ref = im.resize((im.width // 8, im.height // 8), Image.BOX).getpixel((bx // 8, by // 8))
+            mode = 'manual'
+        if a.glob:
+            maps = [Image.new('F', im.size, target[k] / max(ref[k], 1)) for k in range(3)]
+            note = f'{mode} ground {ref} → {tuple(target)}, global'
+        else:
+            fits, n, grid = fit_lighting(im, ref, a.tol, a.neutral)
+            maps = gain_maps(im.size, fits, target, grid)
+            note = f'{mode} ground {ref} → {tuple(target)}, {n} samples'
+    out = im
+    if maps:
+        bands = []
+        for band, g in zip(im.split(), maps):
+            f = ImageMath.lambda_eval(lambda e: e['min'](e['float'](e['a']) * e['b'], 255.0), a=band, b=g)
+            bands.append(f.convert('L'))
+        out = Image.merge('RGB', bands)
     out = ImageEnhance.Color(out).enhance(a.color)
     out = ImageEnhance.Contrast(out).enhance(a.contrast)
     out = out.filter(ImageFilter.UnsharpMask(radius=2, percent=45, threshold=3))
     out.save(a.out, quality=95) if a.out.lower().endswith(('.jpg', '.jpeg')) else out.save(a.out)
-    print(f'ground ref {ref}, {n} samples, saved {out.size} → {a.out}')
+    print(f'{note}; saved {out.size} → {a.out}')
 
 
 if __name__ == '__main__':
